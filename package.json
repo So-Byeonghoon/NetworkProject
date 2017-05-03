@@ -1,0 +1,19 @@
+{
+  "name": "posrello",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/So-Byeonghoon/NetworkProject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/So-Byeonghoon/NetworkProject/issues"
+  },
+  "homepage": "https://github.com/So-Byeonghoon/NetworkProject#readme"
+}
