@@ -1,3 +1,7 @@
+html, body {
+    height: 100%;
+}
+
 h1 {
     text-align: center;
 }
@@ -11,7 +15,7 @@ div {
 }
 
 .container {
-    height: 600px;
+    height: 100%;
     background-color: #d21566;
 }
 
@@ -25,7 +29,7 @@ div {
 .left {
     background-color: white;
     margin-left: 2%;
-    height: 450px;
+    height: 80%;
     float: left;
     width: 45%;
 }
@@ -33,18 +37,19 @@ div {
 .right {
     background-color: #d21566;
     border: 0px;
+    height: 80%;
     margin-right: 2%;
     float: right;
     width: 45%;
 }
 
 .right-padding {
-    height: 40px;
+    height: 10%;
     background-color: #d21566;
     border: 0px;
 }
 
 .right-inner {
-    height: 200px;
+    height: 44%;
     background-color: white;
 }
