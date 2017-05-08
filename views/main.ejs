@@ -14,7 +14,15 @@
                 <div class="left">
                     <span>
                         <h4>프로젝트 리스트</h4>
-                    </span>    
+                    </span>
+                    <% if(projectlist.length == 0) { %>
+                    <div style="border-bottom: 0px; border-right: 0px; border-left: 0px;"><h4>프로젝트가 없습니다.</h4></div>
+                    <% } else { %>
+                        <% for (var i in projectlist) { %>
+                        <div class="element" onclick="location.href='/projects/:<%= projectlist[i] %>'"> 프로젝트 : <%= projectlist[i]  %></div>
+                            <div class="inner-padding"></div>
+                        <% } %>
+                    <% } %>
                 </div>
                 <div class="right">
                     <div class="right-inner">

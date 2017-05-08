@@ -53,3 +53,20 @@ div {
     height: 44%;
     background-color: white;
 }
+
+.inner-padding {
+    height: 10px;
+    border: 0px;
+    background-color: white;
+}
+
+.element {
+    height: 100px;
+    border-right: 0px;
+    border-left: 0px;
+    background-color: white;
+}
+
+.element:hover {
+    background-color: pink;
+}
