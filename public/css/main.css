@@ -6,7 +6,7 @@ h1 {
     text-align: center;
 }
 
-h4 {
+h4, p {
     text-align: center;
 }
 
@@ -61,7 +61,7 @@ div {
 }
 
 .element {
-    height: 100px;
+    height: 90px;
     border-right: 0px;
     border-left: 0px;
     background-color: white;
