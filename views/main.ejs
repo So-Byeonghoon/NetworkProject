@@ -4,10 +4,34 @@
         <link rel="stylesheet" href="/css/main.css">
     </head>
     
-    <body >
-        <div >
-            <h1>Posrello</h1>
+    <body>
+        <% if(msg == 'same name') { %>
+            <script>
+                alert('이미 해당이름의 프로젝트가 존재합니다!');
+            </script>
+        <% } %>
+        <script>
+            function makeFormHide(){
+                var x = document.getElementById('makeProject');
+                if (x.style.display === 'none') {
+                    x.style.display = '';
+                } else {
+                    x.style.display = 'none';
+                }
+            }
+        </script>
+        <div>
+                <h1>Posrello</h1>
+                <span style="width: 15%; margin-left:85%">
+                    <button class="header-button" onclick="makeFormHide()">프로젝트 생성</button>
+                    <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
+                </span>
         </div>        
+        <div id="makeProject" style="display: none;">
+            <form action="/makeProject" method="get">
+                <p>프로젝트 이름: <input type="text" name="projectname" ><button type="submit">생성</button></p>
+            </form>
+        </div>
         <div class="container">
             <div class="padding"></div>
             <span>
@@ -49,6 +73,6 @@
                     </div>
                 </div>
             </span>
-        </div>
+        </div>        
     </body>
 </html>

@@ -14,6 +14,14 @@ div {
     border: 5px solid black;
 }
 
+form {
+    height: 100px;
+}
+
+.header-button {
+    display: inline;
+}
+
 .container {
     height: 100%;
     background-color: #d21566;
@@ -69,4 +77,9 @@ div {
 
 .element:hover {
     background-color: pink;
+}
+
+#makeProject {
+    height: 50px;
+    border-top-bottom: 0px;
 }
