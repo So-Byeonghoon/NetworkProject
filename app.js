@@ -6,6 +6,14 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var DB = require('./db/db_con')();
+var dbCon = DB.init();
+var SQLSet = require('./db/SQL');
+var sql = new SQLSet();
+
+// check db connection
+DB.test_open(dbCon);
+
 app.use(session({ 
     secret: 'keyboard cat',
     resave: false,
@@ -18,20 +26,8 @@ app.use(bodyParser.json());                     // using json for http body
 app.set("view engine", 'ejs');
 
 app.use(express.static('public'));
-var users = [
-    {
-        name: 'kmnoh',
-        userid: 1
-    },
-    {
-        name: 'bhsoh',
-        userid: 2
-    },
-    {
-        name: 'dmpark',
-        userid: 3
-    }
-];        
+
+
 var projects = [
     {
         pid: 1,
@@ -108,29 +104,29 @@ app.get('/login', function(req,res){
         res.redirect('main');
         return;
     }
-    var num = 1;
-    var userExisted = false;
-    var currentUser = {};
-    for(var i in users){                        // check user is in DB
-        if(users[i].name == req.query.username){    
-            userExisted = true;
-            currentUser = users[i];
-        }
-        num++;
-    }
-    if(!userExisted){                            // if user is not in DB, add user to DB
-        users.push({ 
-            name: req.query.username,
-            userid: num
-        });
-        currentUser = users.find(function(value){
-            return value.name == req.query.username;
-        })
-        console.log('add user', req.query.username);
-    }
-    req.session.username = currentUser.name;
-    req.session.userid = currentUser.userid;
-    res.redirect('/main');
+    
+    var currentUser = {name: '', userid: 0};
+
+    dbCon.query(sql.setUser(req.query.username), function (err, rows) {
+    	if (Object.keys(rows).length) {
+    		currentUser.name = rows[0].name;
+    		currentUser.userid = rows[0].userid;
+		    req.session.username = currentUser.name;
+		    req.session.userid = currentUser.userid;
+			res.redirect('/main');
+    	}
+	});
+	dbCon.query(sql.addUser(req.query.username), function(err, rows){});
+	dbCon.query(sql.setUser(req.query.username), function (err, rows) {
+    	if (Object.keys(rows).length) {
+    		currentUser.name = rows[0].name;
+    		currentUser.userid = rows[0].userid;
+		    req.session.username = currentUser.name;
+		    req.session.userid = currentUser.userid;
+			res.redirect('/main');
+    	}
+	});
+
 });
 
 app.get('/main', function(req,res){
