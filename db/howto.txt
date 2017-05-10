@@ -2,19 +2,17 @@ mysql -u root -p
 [write password]
 
 [CREATE DATABASE posrello;]
-
-USE posrello;
-
+[USE posrello;]
 [SHOW TABLES;]
-
-CREATE TABLE users (
-uid INT NOT NULL AUTO_INCREMENT,
-email VARCHAR(50),
-PRIMARY KEY(uid)
-);
-
+[INSERT INTO tablename [(col1, col2, ...)] VALUES (value1, value2, ...);]
 [RENAME TABLE tablename1 TO tablename2, tablename3 TO tablename4;]
 
-[INSERT INTO tablename [(col1, col2, ...)] VALUES (value1, value2, ...);]
 
-INSERT INTO users (email) VALUES ("sbh4728@postech.ac.kr");
+CREATE TABLE Users (
+userid INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(50),
+PRIMARY KEY(userid)
+);
+
+
+INSERT INTO Users (name) VALUES ("bhso"), ("kmnoh"), ("dmpark");
