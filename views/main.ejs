@@ -4,32 +4,78 @@
         <link rel="stylesheet" href="/css/main.css">
     </head>
     
-    <body >
-        <div >
-            <h1>Posrello</h1>
+    <body>
+        <% if(msg == 'same name') { %>
+            <script>
+                alert('이미 해당이름의 프로젝트가 존재합니다!');
+            </script>
+        <% } %>
+        <script>
+            function makeFormHide(){
+                var x = document.getElementById('makeProject');
+                if (x.style.display === 'none') {
+                    x.style.display = '';
+                } else {
+                    x.style.display = 'none';
+                }
+            }
+        </script>
+        <div>
+                <h1>Posrello</h1>
+                <span style="width: 15%; margin-left:85%">
+                    <button class="header-button" onclick="makeFormHide()">프로젝트 생성</button>
+                    <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
+                </span>
         </div>        
+        <div id="makeProject" style="display: none;">
+            <form action="/makeProject" method="get">
+                <p>프로젝트 이름: <input type="text" name="projectname" ><button type="submit">생성</button></p>
+            </form>
+        </div>
         <div class="container">
             <div class="padding"></div>
             <span>
                 <div class="left">
-                    <span>
+                    <div class="titlebox">
                         <h4>프로젝트 리스트</h4>
-                    </span>    
+                    </div>
+                    <div class="elementbox">
+                        <% if(projectList.length == 0) { %>
+                        <div style="border-bottom: 0px; border-right: 0px; border-left: 0px;"><h4>프로젝트가 없습니다.</h4></div>
+                        <% } else { %>
+                            <% for (var i in projectList) { %>
+                                <div class="element" onclick="location.href='/projects/:<%= projectList[i].pid %>'"> 프로젝트 : <%= projectList[i].name  %></div>
+                            <% } %>
+                        <% } %>
+                        <div class="inner-padding"></div>
+                    </div>
                 </div>
                 <div class="right">
                     <div class="right-inner">
-                        <span>
+                        <div class="titlebox">
                             <h4>나의 업무</h4>
-                        </span>    
+                        </div> 
+                        <div class="elementbox">
+                            <% if(substepList.length == 0) { %>
+                                <div style="border-bottom: 0px; border-right: 0px; border-left: 0px;"><h4>해야할 일이  없습니다.</h4></div>
+                            <% } else { %>
+                                <% for (var i in substepList) { %>
+                                    <div class="element" onclick="location.href='/projects/:<%= substepList[i].pid %>/:<%= substepList[i].sid %>'">
+                                        <h4><%= projectList.find(function(value){return value.pid == substepList[i].pid}).name %></h4>
+                                        <p><%= substepList[i].name  %></p></div>
+                                <% } %>
+                            <% } %>
+                            <div class="inner-padding"></div>
+                        </div>
                     </div>
                     <div class="right-padding"></div>
                     <div class="right-inner">
-                        <span>
+                        <div class="titlebox">
                             <h4>초대 리스트</h4>
-                        </span>    
+                        </div>    
                     </div>
                 </div>
             </span>
-        </div>
+        </div>        
     </body>
 </html>

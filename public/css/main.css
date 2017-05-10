@@ -6,12 +6,20 @@ h1 {
     text-align: center;
 }
 
-h4 {
+h4, p {
     text-align: center;
 }
 
 div {
     border: 5px solid black;
+}
+
+form {
+    height: 100px;
+}
+
+.header-button {
+    display: inline;
 }
 
 .container {
@@ -52,4 +60,39 @@ div {
 .right-inner {
     height: 44%;
     background-color: white;
+}
+
+.inner-padding {
+    height: 10px;
+    border: 0px;
+    background-color: white;
+}
+
+.element {
+    height: 90px;
+    border-top: 0px;
+    border-right: 0px;
+    border-left: 0px;
+    background-color: white;
+}
+
+.element:hover {
+    background-color: pink;
+}
+
+.elementbox{
+    height: 81%;
+    border: 0px;
+    overflow: auto;
+}
+
+.titlebox {
+    height: 15%;
+    border: 0px;
+    border-bottom: 5px solid black;
+}
+
+#makeProject {
+    height: 50px;
+    border-top-bottom: 0px;
 }
