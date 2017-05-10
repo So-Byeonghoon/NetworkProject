@@ -70,6 +70,7 @@ form {
 
 .element {
     height: 90px;
+    border-top: 0px;
     border-right: 0px;
     border-left: 0px;
     background-color: white;
@@ -77,6 +78,18 @@ form {
 
 .element:hover {
     background-color: pink;
+}
+
+.elementbox{
+    height: 81%;
+    border: 0px;
+    overflow: auto;
+}
+
+.titlebox {
+    height: 15%;
+    border: 0px;
+    border-bottom: 5px solid black;
 }
 
 #makeProject {
