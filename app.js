@@ -175,7 +175,9 @@ app.get('/main', function(req,res){
         }
         return false;
     })
-    res.render('main', { projectList: projectList, substepList: substepList, msg: msg } );
+    var data = { projectList: projectList, substepList: substepList, msg: msg };
+    console.log(data);
+    res.render('main', data);
        
 });
 
