@@ -1,0 +1,13 @@
+INSERT INTO Users (name) VALUES ("bhso"), ("kmnoh"), ("dmpark");
+
+INSERT INTO Projects (name) VALUES ('posrello'),('network'),('trello');
+
+INSERT INTO Involves (uid, pid) 
+	SELECT U.userid, P.pid 
+	FROM Users U, Projects P
+	WHERE U.userid != P.pid;
+
+INSERT INTO Invites (uid, pid) 
+	SELECT U.userid, P.pid 
+	FROM Users U, Projects P
+	WHERE U.userid = P.pid;
