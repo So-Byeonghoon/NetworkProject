@@ -57,6 +57,15 @@ SQL.prototype = {
 	},
 	getProjectName: function(pid) {
 		return 'SELECT name FROM Projects WHERE pid="' + pid + '"';
+	},
+	makeSubstep: function(pid, name) {
+		return 'INSERT INTO Substeps (pid, name, work) ' +
+			   'VALUE ("' + pid + '", "' + name + '", 0)';
+	},
+	changeSubstep: function(sid, work) {
+		return 'UPDATE Substeps ' +
+			   'SET work = "' + work + '" ' +
+			   'WHERE sid = "' + sid + '"';
 	}
 };
 

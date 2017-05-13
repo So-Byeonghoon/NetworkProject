@@ -226,8 +226,16 @@ io.on('connection', function(socket){
     });
 
     socket.on('make substep', function(data){
-        console.log(data.substepname); 
+        dbCon.query(sql.makeSubstep(data.pid, data.substepname), function (err, okpacket) {
+            console.log(data.substepname);
+        });
     });
+
+    socket.on('update substep', function(data) {
+        dbCon.query(sql.changeSubstep(data.sid, data.work), function (err, okpacket) {
+            // something
+        });
+    })
 })
 
 http.listen(3000, function(){
