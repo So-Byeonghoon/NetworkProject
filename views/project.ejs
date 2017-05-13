@@ -29,8 +29,17 @@
                 }
             });
 
-            function makeFormHide(){
+            function inviteUserToggle(){
                 var x = document.getElementById('inviteUser');
+                if (x.style.display === 'none') {
+                    x.style.display = '';
+                } else {
+                    x.style.display = 'none';
+                }
+            };
+            
+            function makeSubstepToggle(){
+                var x = document.getElementById('makeSubstep');
                 if (x.style.display === 'none') {
                     x.style.display = '';
                 } else {
@@ -41,7 +50,14 @@
             function inviteUser(){
                 var x = $("#invitedUsername").val();
                 socket.emit('invite user', { pid: pid, username: x });
-                makeFormHide();
+                inviteUserToggle();
+                return ;
+            };
+
+            function makeSubstep(){
+                var x = $("#makeSubstepName").val();
+                socket.emit('make substep', { pid: pid, substepname: x });
+                makeSubstepToggle();
                 return ;
             };
 
@@ -61,14 +77,19 @@
 
         <div>
             <h2><%= pname %></h2>
-            <span style="width: 15%; margin-left:85%">
-                <button class="header-button" onclick="makeFormHide();">참여자 초대</button>
+            <span style="width: 23%; margin-left:77%">
+                <button class="header-button" onclick="makeSubstepToggle();">서브스텝 만들기</button>
+                <button class="header-button" onclick="inviteUserToggle();">참여자 초대</button>
                 <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
             </span>
         </div>        
         <div id="inviteUser" style="display: none; border-bottom: 0px;">
-                <p>초대 대상: <input type="text" id="invitedUsername"><button onclick="inviteUser();">생성</button></p>
+                <p>초대 대상: <input type="text" id="invitedUsername"><button onclick="inviteUser();">초대</button></p>
         </div>
+        <div id="makeSubstep" style="display: none; border-bottom: 0px;">
+                <p>카드 이름: <input type="text" id="makeSubstepName"><button onclick="makeSubstep();">생성</button></p>
+        </div>
+
         <div class="container" id="projectShow">
             <div class="padding">
                </div>

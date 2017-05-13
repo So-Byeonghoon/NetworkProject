@@ -176,9 +176,12 @@ io.on('connection', function(socket){
     });
    
     socket.on('invite user', function(data){
-                                                // data.pid, data.username 써서 해당프로젝트 inviteList에 유저 추가해줘야함. 
-    })
+        console.log(data.username);                                                // data.pid, data.username 써서 해당프로젝트 inviteList에 유저 추가해줘야함. 
+    });
 
+    socket.on('make substep', function(data){
+        console.log(data.substepname); 
+    });
 })
 
 http.listen(3000, function(){
