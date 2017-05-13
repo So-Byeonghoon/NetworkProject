@@ -44,7 +44,7 @@
                         <div style="border-bottom: 0px; border-right: 0px; border-left: 0px;"><h4>프로젝트가 없습니다.</h4></div>
                         <% } else { %>
                             <% for (var i in projectList) { %>
-                                <div class="element" onclick="location.href='/projects/:<%= projectList[i].pid %>'"> 프로젝트 : <%= projectList[i].name  %></div>
+                                <div class="element" onclick="location.href='/projects/<%= projectList[i].pid %>'"> 프로젝트 : <%= projectList[i].name  %></div>
                             <% } %>
                         <% } %>
                         <div class="inner-padding"></div>
@@ -57,10 +57,10 @@
                         </div> 
                         <div class="elementbox">
                             <% if(substepList.length == 0) { %>
-                                <div style="border-bottom: 0px; border-right: 0px; border-left: 0px;"><h4>해야할 일이  없습니다.</h4></div>
+                                <div style="border: 0px;"><h4>해야할 일이  없습니다.</h4></div>
                             <% } else { %>
                                 <% for (var i in substepList) { %>
-                                    <div class="element" onclick="location.href='/projects/:<%= substepList[i].pid %>/:<%= substepList[i].sid %>'">
+                                    <div class="element" onclick="location.href='/projects/<%= substepList[i].pid %>/<%= substepList[i].sid %>'">
                                         <%= projectList.find(function(value){return value.pid == substepList[i].pid}).name %>
                                         <p><%= substepList[i].name  %></p></div>
                                 <% } %>

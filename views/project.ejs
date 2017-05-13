@@ -5,12 +5,25 @@
     </head>
     
     <body>
-                <div>
-                <h2>Project</h2>
-                <span style="width: 15%; margin-left:85%">
-                    <button class="header-button" onclick="function()">참여자 초대</button>
-                    <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
-                </span>
+        <script src="/js/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+            var userid = <%= userid %>;
+            var pid = <%= pid %>;
+            var socket = io();
+            alert(userid);
+            socket.emit('add user', { userid: userid, pid: pid});
+            socket.on('load data', function(data){
+                $("#todo").append("<p>test</p>");
+            })
+        </script>
+
+        <div>
+            <h2><%= pname %></h2>
+            <span style="width: 15%; margin-left:85%">
+                <button class="header-button" onclick="function()">참여자 초대</button>
+                <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
+            </span>
         </div>        
         <div id="makeProject" style="display: none; border-bottom: 0px;">
             <form action="/makeProject" method="get">
@@ -24,7 +37,7 @@
                 <div class="titlebox">
                     <h4>To Do</h4>
                 </div>
-                <div class="elementbox">
+                <div class="elementbox" id="todo">
                 </div>
             </div>
             <div class="right">

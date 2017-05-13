@@ -79,8 +79,15 @@ var substeps = [
         pid: 1,
         name: 'make main page',
         due: '20170509'
+    },
+    {
+        sid: 2,
+        pid: 1,
+        name: 'make project page',
+        due: '20170515'
     }
 ]
+
 
 var involveSubsteps = [
     {
@@ -180,6 +187,11 @@ app.get('/main', function(req,res){
 });
 
 app.get('/logout', function(req, res){
+    if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
+        console.log('need to login');
+        res.redirect('/');
+    }
+
     if(req.session.userid){                                 // if user logged-in, log out
         req.session.destroy(function(err){                  
             if(err){
@@ -194,6 +206,11 @@ app.get('/logout', function(req, res){
 })
 
 app.get('/makeProject', function(req,res){
+     if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
+        console.log('need to login');
+        res.redirect('/');
+    }
+
     if(req.query.projectname){
         var check =false
         for(var i in projects){                             // check that DB already have same name project
@@ -214,9 +231,41 @@ app.get('/makeProject', function(req,res){
     }
 })
 
-app.get('/project', function(req,res){
-    res.render('project');
+app.get('/projects/:id', function(req,res){
+    if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
+        console.log('need to login');
+        res.redirect('/');
+    }
+    var project = projects.find(function(value){
+        return value.pid == req.params.id;
+    })
+    var data = {
+        pname : project.name,
+        pid : project.pid,
+        userid: req.session.userid
+    };
+    res.render('project', data);
 });
+
+io.on('connection', function(socket){
+    var pid;
+    socket.on('add user', function(data){
+        console.log(data.userid);
+        socket.userid = data.userid;
+        console.log('user connected: ', socket.userid);
+        pid = data.pid;
+        console.log(pid);
+        socket.join(data.pid);
+        var data = {
+            pid: pid
+        };
+        io.sockets.in(pid).emit('load data', data);
+
+    });
+    console.log(pid);
+    
+
+})
 
 http.listen(3000, function(){
     console.log('Server On!');
