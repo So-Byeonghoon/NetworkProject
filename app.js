@@ -174,7 +174,7 @@ app.get('/main', function(req,res){
     var data = { projectList: projectList, substepList: substepList, msg: msg };
     console.log(data);
     res.render('main', data);
-       
+    return; 
 });
 
 app.get('/logout', function(req, res){
@@ -211,6 +211,10 @@ app.get('/makeProject', function(req,res){
         res.redirect('/main');
     }
 })
+
+app.get('/project', function(req,res){
+    res.render('project');
+});
 
 http.listen(3000, function(){
     console.log('Server On!');

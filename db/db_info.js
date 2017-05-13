@@ -3,8 +3,8 @@ module.exports = (function() {
         local: {
             host: 'localhost',
             port: '3306',
-            user: 'root',
-            password: '5omicron5',
+            user: 'network',
+            password: 'posrello',
             database: 'posrello'
         }
     }
