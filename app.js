@@ -105,32 +105,34 @@ app.get('/login', function(req,res){
         return;
     }
     
-    var currentUser = {name: '', userid: 0};
-
-    dbCon.query(sql.setUser(req.query.username), function (err, rows) {
-    	if (Object.keys(rows).length) {
-    		currentUser.name = rows[0].name;
-    		currentUser.userid = rows[0].userid;
-		    req.session.username = currentUser.name;
-		    req.session.userid = currentUser.userid;
-			res.redirect('/main');
-    	}
+    function SignIn(req, callback) {
+    	dbCon.query(sql.setUser(req.query.username), function (err, rows) {
+	    	if (Object.keys(rows).length) {
+			    req.session.username = rows[0].name;
+			    req.session.userid = rows[0].userid;
+				res.redirect('/main');
+	    	}
+			else {
+	    		callback(req);
+			}
+		});
+    }
+    SignIn(req, function (req) {
+		dbCon.query(sql.addUser(req.query.username), function(err, rows) {
+			dbCon.query(sql.setUser(req.query.username), function (err, rows) {
+		    	if (Object.keys(rows).length) {
+			    req.session.username = rows[0].name;
+			    req.session.userid = rows[0].userid;
+				res.redirect('/main');
+		    	}
+			});
+		});
 	});
-	dbCon.query(sql.addUser(req.query.username), function(err, rows){});
-	dbCon.query(sql.setUser(req.query.username), function (err, rows) {
-    	if (Object.keys(rows).length) {
-    		currentUser.name = rows[0].name;
-    		currentUser.userid = rows[0].userid;
-		    req.session.username = currentUser.name;
-		    req.session.userid = currentUser.userid;
-			res.redirect('/main');
-    	}
-	});
-
 });
 
 app.get('/main', function(req,res){
-    if(!req.session.username){                  // if not logged in, redirect to login page
+	console.log("MAIN: " + req.session.username);
+    if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
         console.log('need to login');
         res.redirect('/');
     }
