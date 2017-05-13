@@ -24,7 +24,7 @@ SQL.prototype = {
 	},
 	makeInvite: function(pid, username) {
 		return 'INSERT INTO Invites (pid, uid) ' + 
-				   'SELECT "' + pid + '", uid ' +
+				   'SELECT "' + pid + '", userid ' +
 				   'FROM Users ' +
 				   'WHERE name = "' + username + '"';
 	},
