@@ -50,6 +50,7 @@
         <div>
             <h2><%= pname %></h2>
             <span style="width: 15%; margin-left:85%">
+<<<<<<< HEAD
                 <button class="header-button" onclick="makeFormHide();">참여자 초대</button>
                 <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
             </span>
@@ -58,6 +59,18 @@
                 <p>초대 대상: <input type="text" id="invitedUsername"><button onclick="inviteUser();">생성</button></p>
         </div>
         <div class="container" id="projectShow">
+=======
+                <button class="header-button" onclick="function()">참여자 초대</button>
+                <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
+            </span>
+        </div>        
+        <div id="makeProject" style="display: none; border-bottom: 0px;">
+            <form action="/makeProject" method="get">
+                <p>프로젝트 이름: <input type="text" name="projectname" ><button type="submit">생성</button></p>
+            </form>
+        </div>
+        <div class="container">
+>>>>>>> origin/bhso
             <div class="padding">
                </div>
             <div class="left">
@@ -85,7 +98,10 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
         <div class="container" id="workShow">
         </div>
+=======
+>>>>>>> origin/bhso
     <body>
 </body>
