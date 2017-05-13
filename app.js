@@ -82,7 +82,7 @@ app.get('/main', function(req,res){
 
     dbCon.query(sql.getProjectList(req.session.userid), function (err, projects) {
     	dbCon.query(sql.getSubsteps(req.session.userid), function (err, substeps) {
-    		res.render('main', { projectList: projects, substepList: substeps, msg: msg } );
+    		res.render('main', { projectList: projects, substepList: substeps, inviteList: [{ pid: 5, uid: 1}], msg: msg } );   // invitelist db 쿼리 추가 필요
 		});
 	});
 });
@@ -127,16 +127,20 @@ app.get('/projects/:id', function(req,res){
         console.log('need to login');
         res.redirect('/');
     }
-    var project = projects.find(function(value){
-        return value.pid == req.params.id;
-    })
-    var data = {
-        pname : project.name,
-        pid : project.pid,
+        var data = {                        // req.params.id == pid 조건 걸어서 project 디비에서 찾아서 보내줘야함
+        pname : 'posrello',
+        pid : req.params.id,
         userid: req.session.userid
     };
     res.render('project', data);
 });
+
+app.get('/acceptinvite/:id', function(req, res){
+    // req.params.id 는 프로젝트 아이디고 해당 프로젝트에 req.session.userid써서 디비에  유저 추가해주어야 함 
+
+    res.redirect('/main');
+})
+
 
 io.on('connection', function(socket){
     var pid;
@@ -147,15 +151,14 @@ io.on('connection', function(socket){
         pid = data.pid;
         console.log(pid);
         socket.join(data.pid);
-        var data = {
-            pid: pid
+        var data = {                            // data에 해당 pid로 substep 등 관련 정보 담아서 보내주어야 함.
         };
         io.sockets.in(pid).emit('load data', data);
 
     });
    
     socket.on('invite user', function(data){
-        console.log(data.pid,data.username);
+                                                // data.pid, data.username 써서 해당프로젝트 inviteList에 유저 추가해줘야함. 
     })
 
 })

@@ -59,9 +59,13 @@
                             <% if(substepList.length == 0) { %>
                                 <div style="border: 0px;"><h4>해야할 일이  없습니다.</h4></div>
                             <% } else { %>
-                                <% for (var i in substepList) { %>
+                                <% for (var i in substepList) { %>                             
                                     <div class="element" onclick="location.href='/projects/<%= substepList[i].pid %>/<%= substepList[i].sid %>'">
-                                        <%= projectList.find(function(value){return value.pid == substepList[i].pid}).name %>
+                                        <% for (var j in projectList) { %>
+                                            <% if(projectList[j].pid == substepList[i].pid) { %>
+                                                <%= projectList[j].name %>
+                                            <% } %>
+                                        <% } %>
                                         <p><%= substepList[i].name  %></p></div>
                                 <% } %>
                             <% } %>
@@ -72,7 +76,24 @@
                     <div class="right-inner">
                         <div class="titlebox">
                             <h4>초대 리스트</h4>
-                        </div>    
+                        </div>  
+                        <div class="elementbox">
+                            <% if(inviteList.length == 0) { %>
+                                <div style="border: 0px;"><h4>초대목록이 없습니다.</h4></div>
+                            <% } else { %>
+                                <% for (var i in inviteList) { %>
+                                    <div class="element" >
+                                        <% for (var j in projectList) { %>
+                                                <%= projectList[j].pid %>
+                                            <% if(projectList[j].pid == inviteList[i].pid) { %>
+                                                <%= projectList[j].name %>
+                                            <% } %>
+                                        <% } %>
+                                        <button style="float: right;" onclick="location.href='/acceptinvite/<%= inviteList[i].pid %>'">승낙</button>
+                                    </div>
+                                <% } %>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
             </span>
