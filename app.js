@@ -151,8 +151,26 @@ io.on('connection', function(socket){
         pid = data.pid;
         console.log(pid);
         socket.join(data.pid);
-        var data = {                            // data에 해당 pid로 substep 등 관련 정보 담아서 보내주어야 함.
-        };
+        var data = [   // data에 해당 pid로 substep 등 관련 정보 담아서 보내주어야 함.
+            {
+                sid: 1,
+                work: 0,
+                pid: 1,
+                name: '메인 페이지 만들기'
+            },
+            {
+                sid: 2,
+                work: 1,
+                pid: 1,
+                name: '로그인 기능'
+            },
+            {
+                sid: 2,
+                work: 2,
+                pid: 1,
+                name: '프로젝트 만들기'
+            }
+        ];
         io.sockets.in(pid).emit('load data', data);
 
     });

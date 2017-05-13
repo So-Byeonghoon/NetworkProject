@@ -14,7 +14,19 @@
             socket.emit('add user', { userid: userid, pid: pid});
             socket.on('load data', function(data){
                 $("#todo").empty();
-                $("#todo").append("<div class='element' onclick='changePage();'>test</div>");
+                $("#doing").empty();
+                $("#done").empty();
+                for(var i in data){
+                    if(data[i].work == 0) {    
+                        $("#todo").append("<div class='element' onclick='changePage();'>"+data[i].name+"</div>");
+                    } 
+                    else if(data[i].work == 1) {
+                        $("#doing").append("<div class='element' onclick='changePage();'>"+data[i].name+"</div>");
+                    }
+                    else {
+                        $("#done").append("<div class='element' onclick='changePage();'>"+data[i].name+"</div>");
+                    }
+                }
             });
 
             function makeFormHide(){
@@ -72,14 +84,14 @@
                     <div class="titlebox">
                         <h4>Doing</h4>
                     </div>
-                    <div class="elementbox">
+                    <div class="elementbox" id="doing">
                     </div>
                 </div>
                 <div class="right-right">
                     <div class="titlebox">
                         <h4>Done</h4>
                     </div>
-                    <div class="elementbox">
+                    <div class="elementbox" id="done">
                 </div>
 
                 </div>
