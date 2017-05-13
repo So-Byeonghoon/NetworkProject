@@ -101,3 +101,9 @@ form {
     height: 50px;
     border-top-bottom: 0px;
 }
+
+#workShow {
+    display: none;
+}
+
+

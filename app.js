@@ -262,8 +262,10 @@ io.on('connection', function(socket){
         io.sockets.in(pid).emit('load data', data);
 
     });
-    console.log(pid);
-    
+   
+    socket.on('invite user', function(data){
+        console.log(data.pid,data.username);
+    })
 
 })
 

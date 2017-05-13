@@ -11,26 +11,53 @@
             var userid = <%= userid %>;
             var pid = <%= pid %>;
             var socket = io();
-            alert(userid);
             socket.emit('add user', { userid: userid, pid: pid});
             socket.on('load data', function(data){
-                $("#todo").append("<p>test</p>");
-            })
+                $("#todo").empty();
+                $("#todo").append("<div class='element' onclick='changePage();'>test</div>");
+            });
+
+            function makeFormHide(){
+                var x = document.getElementById('inviteUser');
+                if (x.style.display === 'none') {
+                    x.style.display = '';
+                } else {
+                    x.style.display = 'none';
+                }
+            };
+
+            function inviteUser(){
+                var x = $("#invitedUsername").val();
+                socket.emit('invite user', { pid: pid, username: x });
+                makeFormHide();
+                return ;
+            };
+
+            function changePage(){
+                var $workShow = $('#workShow') ;
+                var $projectShow = $('#projectShow');
+                if($workShow.css('display') == 'none'){
+                    $workShow.show();
+                    $projectShow.hide();
+                } else {
+                    $workShow.hide();
+                    projectShow.show();
+                }
+                return;
+            }
         </script>
 
         <div>
             <h2><%= pname %></h2>
             <span style="width: 15%; margin-left:85%">
-                <button class="header-button" onclick="function()">참여자 초대</button>
+                <button class="header-button" onclick="makeFormHide();">참여자 초대</button>
                 <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
             </span>
         </div>        
-        <div id="makeProject" style="display: none; border-bottom: 0px;">
-            <form action="/makeProject" method="get">
-                <p>프로젝트 이름: <input type="text" name="projectname" ><button type="submit">생성</button></p>
-            </form>
+        <div id="inviteUser" style="display: none; border-bottom: 0px;">
+                <p>초대 대상: <input type="text" id="invitedUsername"><button onclick="inviteUser();">생성</button></p>
         </div>
-        <div class="container">
+        <div class="container" id="projectShow">
             <div class="padding">
                </div>
             <div class="left">
@@ -57,6 +84,8 @@
 
                 </div>
             </div>
+        </div>
+        <div class="container" id="workShow">
         </div>
     <body>
 </body>
