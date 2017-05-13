@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/project.css">
+    </head>
+    
+    <body>
+        <script src="/js/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+            var userid = <%= userid %>;
+            var pid = <%= pid %>;
+            var socket = io();
+            alert(userid);
+            socket.emit('add user', { userid: userid, pid: pid});
+            socket.on('load data', function(data){
+                $("#todo").append("<p>test</p>");
+            })
+        </script>
+
+        <div>
+            <h2><%= pname %></h2>
+            <span style="width: 15%; margin-left:85%">
+                <button class="header-button" onclick="function()">참여자 초대</button>
+                <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
+            </span>
+        </div>        
+        <div id="makeProject" style="display: none; border-bottom: 0px;">
+            <form action="/makeProject" method="get">
+                <p>프로젝트 이름: <input type="text" name="projectname" ><button type="submit">생성</button></p>
+            </form>
+        </div>
+        <div class="container">
+            <div class="padding">
+               </div>
+            <div class="left">
+                <div class="titlebox">
+                    <h4>To Do</h4>
+                </div>
+                <div class="elementbox" id="todo">
+                </div>
+            </div>
+            <div class="right">
+                <div class="right-left">
+                    <div class="titlebox">
+                        <h4>Doing</h4>
+                    </div>
+                    <div class="elementbox">
+                    </div>
+                </div>
+                <div class="right-right">
+                    <div class="titlebox">
+                        <h4>Done</h4>
+                    </div>
+                    <div class="elementbox">
+                </div>
+
+                </div>
+            </div>
+        </div>
+    <body>
+</body>

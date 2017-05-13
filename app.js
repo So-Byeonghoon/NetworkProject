@@ -28,7 +28,8 @@ app.set("view engine", 'ejs');
 app.use(express.static('public'));
 
 app.get('/', function(req,res){
-    if(req.session.username){                   // if already logged-in, redirect to main
+    // if already logged-in, redirect to main
+    if(typeof req.session.username !== 'undefined' && req.session.username){
         console.log("can't acess login page");
         res.redirect('main');
         return;
@@ -37,7 +38,8 @@ app.get('/', function(req,res){
 });
 
 app.get('/login', function(req,res){
-    if(req.session.username){                   // if already logged-in, redirect to main
+    // if already logged-in, redirect to main
+    if(typeof req.session.username !== 'undefined' && req.session.username){
         console.log("can't acess login page");
         res.redirect('main');
         return;
