@@ -83,12 +83,7 @@
                             <% } else { %>
                                 <% for (var i in inviteList) { %>
                                     <div class="element" >
-                                        <% for (var j in projectList) { %>
-                                                <%= projectList[j].pid %>
-                                            <% if(projectList[j].pid == inviteList[i].pid) { %>
-                                                <%= projectList[j].name %>
-                                            <% } %>
-                                        <% } %>
+                                        <h4><%= inviteList[i].project_name %></h4>
                                         <button style="float: right;" onclick="location.href='/acceptinvite/<%= inviteList[i].pid %>'">승낙</button>
                                     </div>
                                 <% } %>

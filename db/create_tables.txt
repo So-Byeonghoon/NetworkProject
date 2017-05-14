@@ -62,7 +62,7 @@ sid INT NOT NULL,
 name VARCHAR(50),
 finished INT NOT NULL DEFAULT 0,
 FOREIGN KEY(sid) REFERENCES Substeps(sid)
-	ON UPDATE CASCADE ON DELETE CASCADE,
+	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Comments (
@@ -76,4 +76,11 @@ FOREIGN KEY(uid) REFERENCES Users(userid)
 );
 
 
-
+DROP TABLE Comments;
+DROP TABLE Details;
+DROP TABLE Involve_Substeps;
+DROP TABLE Substeps;
+DROP TABLE Invites;
+DROP TABLE Involves;
+DROP TABLE Projects;
+DROP TABLE Users;

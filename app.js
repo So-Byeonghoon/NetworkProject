@@ -21,7 +21,7 @@ app.use(session({
 }));
 
 app.use(bodyParser.urlencoded({ extended : false }));
-app.use(bodyParser.json());                     // using json for http body
+app.use(bodyParser.json());  // using json for http body
 
 app.set("view engine", 'ejs');
 
@@ -47,33 +47,35 @@ app.get('/login', function(req,res){
     }
     
     function SignIn(req, callback) {
-    	dbCon.query(sql.setUser(req.query.username), function (err, rows) {
-	    	if (Object.keys(rows).length) {
-			    req.session.username = rows[0].name;
-			    req.session.userid = rows[0].userid;
-				res.redirect('/main');
-	    	}
-			else {
-	    		callback(req);
-			}
-		});
+        dbCon.query(sql.setUser(req.query.username), function (err, rows) {
+            if (Object.keys(rows).length) {
+                req.session.username = rows[0].name;
+                req.session.userid = rows[0].userid;
+                res.redirect('/main');
+            }
+            else {
+                callback(req);
+            }
+        });
     }
     SignIn(req, function (req) {
-		dbCon.query(sql.addUser(req.query.username), function(err, rows) {
-			SignIn(req, function(req) {});
-		});
-	});
+        dbCon.query(sql.addUser(req.query.username), function(err, rows) {
+            SignIn(req, function(req) {});
+        });
+    });
 });
 
 app.get('/main', function(req,res){
-	console.log("MAIN: " + req.session.username);
-    if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
+    console.log("MAIN: " + req.session.username);
+    // if not logged in, redirect to login page
+    if(typeof req.session.username === 'undefined' || !req.session.username){
         console.log('need to login');
         res.redirect('/');
         return;
     }
     var msg = '';
-    if(req.session.msg){                        // check session have message to client
+    // check session have message to client
+    if(req.session.msg){
         msg = req.session.msg;
         req.session.msg = false;
     }
@@ -81,19 +83,24 @@ app.get('/main', function(req,res){
     console.log('session userid: ', req.session.userid);
 
     dbCon.query(sql.getProjectList(req.session.userid), function (err, projects) {
-    	dbCon.query(sql.getSubsteps(req.session.userid), function (err, substeps) {
-    		res.render('main', { projectList: projects, substepList: substeps, inviteList: [{ pid: 5, uid: 1}], msg: msg } );   // invitelist db 쿼리 추가 필요
-		});
-	});
+        dbCon.query(sql.getMySubsteps(req.session.userid), function (err, substeps) {
+            dbCon.query(sql.getInviteList(req.session.userid), function (err, invites) {
+                res.render('main', { projectList: projects, substepList: substeps, inviteList: invites, msg: msg } );
+            });
+        });
+    });
 });
 
 app.get('/logout', function(req, res){
-    if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
+    // if not logged in, redirect to login page
+    if(typeof req.session.username === 'undefined' || !req.session.username){
         console.log('need to login');
         res.redirect('/');
+        return;
     }
 
-    if(req.session.userid){                                 // if user logged-in, log out
+    // if user logged-in, log out
+    if(req.session.userid){
         req.session.destroy(function(err){
             if(err){
                 console.log(err);
@@ -107,39 +114,69 @@ app.get('/logout', function(req, res){
 })
 
 app.get('/makeProject', function(req,res){
-     if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
+    // if not logged in, redirect to login page
+     if(typeof req.session.username === 'undefined' || !req.session.username){
         console.log('need to login');
         res.redirect('/');
+        return;
     }
 
     if(req.query.projectname){
-    	dbCon.query(sql.makeProject(req.query.projectname), function (err, okpacket) {
-    		var statement = sql.addProjectMember(okpacket.insertId, req.session.userid, '');
-    		dbCon.query(statement, function (err, okpacket) {
-		    	res.redirect('/main');
-    		});
-		});
+        dbCon.query(sql.makeProject(req.query.projectname), function (err, okpacket) {
+            var statement = sql.addProjectMember(okpacket.insertId, req.session.userid);
+            dbCon.query(statement, function (err, okpacket) {
+                res.redirect('/main');
+            });
+        });
     }
 })
 
 app.get('/projects/:id', function(req,res){
-    if(typeof req.session.username === 'undefined' || !req.session.username){                  // if not logged in, redirect to login page
+    // if not logged in, redirect to login page
+    if(typeof req.session.username === 'undefined' || !req.session.username){
         console.log('need to login');
         res.redirect('/');
+        return;
     }
-        var data = {                        // req.params.id == pid 조건 걸어서 project 디비에서 찾아서 보내줘야함
-        pname : 'posrello',
+    var data = {
         pid : req.params.id,
         userid: req.session.userid
     };
-    res.render('project', data);
+    dbCon.query(sql.getProjectName(data.pid), function (err, result) {
+        if (err) {
+            console.log('getProejct ERROR: '+err);
+            res.redirect('/main');
+        } else {
+            data.pname = result[0].name;
+            res.render('project', data);
+        }
+    });
 });
 
 app.get('/acceptinvite/:id', function(req, res){
-    // req.params.id 는 프로젝트 아이디고 해당 프로젝트에 req.session.userid써서 디비에  유저 추가해주어야 함 
-
-    res.redirect('/main');
-})
+    var pid = req.params.id;
+    var uid = req.session.userid;
+    dbCon.query(sql.checkInvite(pid, uid), function (err, result) {
+        if (result[0].isInvited) {
+            dbCon.query(sql.addProjectMember(pid, uid), function (err, okpacket) {
+                if (err) {
+                    console.log('addProjectMember ERROR: '+err);
+                    res.redirect('/main');
+                }else{
+                    dbCon.query(sql.deleteInvite(pid, uid), function (err, okpacket) {
+                        if (err) {
+                            console.log('deleteInvite ERROR: '+err);
+                        }
+                        res.redirect('/main');
+                    });
+                }
+            });
+        }else{
+            console.log("Didn't invited yet.");
+            res.redirect('/main');
+        }
+    });
+});
 
 
 io.on('connection', function(socket){
@@ -151,32 +188,41 @@ io.on('connection', function(socket){
         pid = data.pid;
         console.log(pid);
         socket.join(data.pid);
-        var data = [   // data에 해당 pid로 substep 등 관련 정보 담아서 보내주어야 함.
-            {
-                sid: 1,
-                work: 0,
-                pid: 1,
-                name: '메인 페이지 만들기'
-            },
-            {
-                sid: 2,
-                work: 1,
-                pid: 1,
-                name: '로그인 기능'
-            },
-            {
-                sid: 2,
-                work: 2,
-                pid: 1,
-                name: '프로젝트 만들기'
-            }
-        ];
-        io.sockets.in(pid).emit('load data', data);
-
+        // var data = [
+        //     {
+        //         sid: 1,
+        //         work: 0,
+        //         pid: 1,
+        //         name: '메인 페이지 만들기'
+        //     },
+        //     {
+        //         sid: 2,
+        //         work: 1,
+        //         pid: 1,
+        //         name: '로그인 기능'
+        //     },
+        //     {
+        //         sid: 2,
+        //         work: 2,
+        //         pid: 1,
+        //         name: '프로젝트 만들기'
+        //     }
+        // ];
+        dbCon.query(sql.getProjectSubsteps(data.pid), function (err, result) {
+            // result = {sid, work, name} list
+            console.log(result);
+            io.sockets.in(pid).emit('load data', result);
+        });
     });
    
     socket.on('invite user', function(data){
-        console.log(data.username);                                                // data.pid, data.username 써서 해당프로젝트 inviteList에 유저 추가해줘야함. 
+        dbCon.query(sql.makeInvite(data.pid, data.username), function (err, okpacket) {
+            if (err) {
+                console.log("Invite user ERROR: " + err);
+            } else {
+                console.log("Send Invitation to: " + data.username);
+            }
+        });
     });
 
     socket.on('make substep', function(data){
