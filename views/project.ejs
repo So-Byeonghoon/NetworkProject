@@ -12,18 +12,12 @@
             var pid = <%= pid %>;
             var socket = io();
             var nsid;
-            socket.emit('add user', { userid: userid, pid: pid});
-            socket.on('load data', function(data){
+            socket.emit('add user', { userid: userid, pid: pid});// if user entered project page, send user id to server 
+            socket.on('load data', function(data){              // if client get 'load data' msg, update project page
                 $("#todo").empty();
                 $("#doing").empty();
                 $("#done").empty();
                 for(var i in data){
-                    /*
-                    if(data[i].work == 0) {    
-                        $("#todo").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
-                    } 
-                    else if(data[i].work == 1) {
-=======*/
                     if(data[i].done == 0) {    
                         $("#todo").append("<div class='element' id='element" + data[i].sid + "' onclick='changeToSubstep("+data[i].sid+ ");'>"+data[i].name+"</div>");
                     } 
@@ -36,7 +30,7 @@
                 }
             });
             
-            socket.on('load substep', function(data){
+            socket.on('load substep', function(data){   // if client get 'load substep' msg, update substep page
                 var $substeptitle = $("#substeptitle");
                 var $details = $("#details");
                 var $comments = $("#comments");
@@ -57,7 +51,7 @@
                 }
             });
             
-            function inviteUserToggle(){
+            function inviteUserToggle(){    // Toggle inviteUser form 
                 var x = document.getElementById('inviteUser');
                 if (x.style.display === 'none') {
                     x.style.display = '';
@@ -66,7 +60,7 @@
                 }
             };
             
-            function makeSubstepToggle(){
+            function makeSubstepToggle(){   // Toggle makeSubstep form
                 var x = document.getElementById('makeSubstep');
                 if (x.style.display === 'none') {
                     x.style.display = '';
@@ -75,7 +69,7 @@
                 }
             };
 
-            function addUserToSubstepToggle(){
+            function addUserToSubstepToggle(){      // Toggle addUserToSubstep form
                 var x = document.getElementById('addUserToSubstep');
                 if (x.style.display === 'none') {
                     x.style.display = '';
@@ -84,7 +78,7 @@
                 }
             };
 
-            function addDetailToggle(){
+            function addDetailToggle(){     // Toggle addDetail form
                 var x = document.getElementById('addDetail');
                 if (x.style.display === 'none') {
                     x.style.display = '';
@@ -93,21 +87,21 @@
                 }
             };
 
-            function inviteUser(){
+            function inviteUser(){      // if client click inviteUser button, socket send data with msg 'invite user' to server
                 var x = $("#invitedUsername").val();
                 socket.emit('invite user', { pid: pid, username: x });
                 inviteUserToggle();
                 return ;
             };
 
-            function makeSubstep(){
+            function makeSubstep(){     // if client click makeSubstep button, socket send data with msg 'make substep' to server
                 var x = $("#makeSubstepName").val();
                 socket.emit('make substep', { pid: pid, substepname: x });
                 makeSubstepToggle();
                 return ;
             };
 
-            function changeToSubstep(sid){
+            function changeToSubstep(sid){      // if client click changeToSubstep button, socket send data with msg 'get substep' to server
                 var $workShow = $('#workShow') ;
                 var $projectShow = $('#projectShow');
                 $workShow.show();
@@ -117,7 +111,7 @@
                 return;
             }
             
-            function changeToProject(){
+            function changeToProject(){         // if client click changeToProject button, socket send data with msg 'leave substep' to server
                 var $workShow = $('#workShow') ;
                 var $projectShow = $('#projectShow');
                 $workShow.hide();
@@ -127,28 +121,28 @@
                 return;
             }
 
-            function addUserToSubstep(){
+            function addUserToSubstep(){        // if client click addUserToSubstep button, socket send data with msg 'add user to substep' to server
                 var x = $("#addUserToSubstepName").val();
                 socket.emit('add user to substep', { sid: nsid, username: x });
                 $("#addUserToSubstepName").val("");
                 addUserToSubstepToggle();
             };
 
-            function addDetail(){
+            function addDetail(){       // if client click addDetail button, socket send data with msg 'add detail to substep' to server
                 var x = $("#addDetailName").val();
                 socket.emit('add detail to substep', { sid: nsid, detailname: x });
                 $("#addDetailName").val("");
                 addDetailToggle();
             };
             
-            function addComment(){
+            function addComment(){      // if client click addComment button, socket send data with msg 'add comment to substep' to server
                 var x = $("#addCommentName").val();
                 socket.emit('add comment to substep', { sid: nsid, comment: x });
                 $("#addCommentName").val("");
 
             };
 
-            function finishDetail(i){
+            function finishDetail(i){       // if client click button that id is #details i  , socket send data with msg 'finish detail' to server
                 var x = $("#details"+ i).val();
                 socket.emit('finish detail', { sid: nsid, detailname: x });
                 

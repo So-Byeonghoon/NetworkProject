@@ -199,12 +199,6 @@ io.on('connection', function(socket){
         socket.join(data.pid);
         console.log("get Project's Substep SQL: " +sql.getProjectSubsteps(data.pid));
         sendProjectData(pid);
-        /*
-        dbCon.query(sql.getProjectSubsteps(data.pid), function (err, result) {
-            // result = {sid, name, todo, done} list
-            console.log(result);
-            io.sockets.in(pid).emit('load data', result);
-        });*/
     });
    
     socket.on('invite user', function(data){
@@ -221,10 +215,6 @@ io.on('connection', function(socket){
         dbCon.query(sql.makeSubstep(data.pid, data.substepname), function (err, okpacket) {
             console.log('Make Substep: '+okpacket);
             sendProjectData(pid);
-            // dbCon.query(sql.getProjectSubsteps(data.pid), function (err, result) {
-            // // result = {sid, name, todo, done} list
-            //     console.log('Project Substeps: '+result);
-            // });
         });
     });
 
