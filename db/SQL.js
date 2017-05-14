@@ -51,9 +51,14 @@ SQL.prototype = {
 			     'AND I.uid ="' + userid + '"';
 	},
 	getProjectSubsteps: function(pid) {
-		return 'SELECT sid, work, name ' +
-			   'FROM Substeps ' +
-			   'WHERE pid = "' + pid + '"';
+		return 'SELECT S.sid, S.name, ' + 
+					  'COALESCE(sum(D.finished), 0) done, ' + 
+					  'COALESCE(count(D.name)-sum(D.finished), 0) todo ' +
+			   'FROM Substeps S ' +
+			   	   'LEFT OUTER JOIN Details D ' +
+			   	     'ON S.sid = D.sid ' +
+			   'WHERE S.pid = "' + pid + '" ' +
+			   'GROUP BY S.sid, S.name';
 	},
 	getProjectName: function(pid) {
 		return 'SELECT name FROM Projects WHERE pid="' + pid + '"';
@@ -62,10 +67,25 @@ SQL.prototype = {
 		return 'INSERT INTO Substeps (pid, name, work) ' +
 			   'VALUE ("' + pid + '", "' + name + '", 0)';
 	},
-	changeSubstep: function(sid, work) {
-		return 'UPDATE Substeps ' +
-			   'SET work = "' + work + '" ' +
-			   'WHERE sid = "' + sid + '"';
+	addSubstepMember: function(sid, username) {
+		return 'INSERT INTO Involve_Substeps (uid, sid) ' +
+			   		'SELECT userid, "' + sid + '" ' +
+			   		'FROM Users ' +
+			   		'WHERE name = "' + username + '"';
+	},
+	addDetail: function(sid, detailname) {
+		return 'INSERT INTO Details (sid, name, finished) ' + 
+			   'VALUE ("' + sid + '", "' + detailname + '", 0)';
+	},
+	addComment: function(sid, content) {
+		return 'INSERT INTO Comments (sid, contents) ' +
+			   'VALUE ("' + sid + '", "' + content + '")';
+	},
+	finishDetail: function(sid, detailname) {
+		return 'UPDATE Details ' +
+			   'SET finished = 1 ' +
+			   'WHERE sid= "' + sid + '" ' +
+			     'AND name = "' + detailname + '"';
 	}
 };
 

@@ -188,28 +188,9 @@ io.on('connection', function(socket){
         pid = data.pid;
         console.log(pid);
         socket.join(data.pid);
-        // var data = [
-        //     {
-        //         sid: 1,
-        //         work: 0,
-        //         pid: 1,
-        //         name: '메인 페이지 만들기'
-        //     },
-        //     {
-        //         sid: 2,
-        //         work: 1,
-        //         pid: 1,
-        //         name: '로그인 기능'
-        //     },
-        //     {
-        //         sid: 2,
-        //         work: 2,
-        //         pid: 1,
-        //         name: '프로젝트 만들기'
-        //     }
-        // ];
+        console.log("get Project's Substep SQL: " +sql.getProjectSubsteps(data.pid));
         dbCon.query(sql.getProjectSubsteps(data.pid), function (err, result) {
-            // result = {sid, work, name} list
+            // result = {sid, name, todo, done} list
             console.log(result);
             io.sockets.in(pid).emit('load data', result);
         });
@@ -227,16 +208,39 @@ io.on('connection', function(socket){
 
     socket.on('make substep', function(data){
         dbCon.query(sql.makeSubstep(data.pid, data.substepname), function (err, okpacket) {
-            console.log(data.substepname);
+            console.log('Make Substep: '+okpacket);
+            io.sockets.in(pid).emit('load data', result);
+            // dbCon.query(sql.getProjectSubsteps(data.pid), function (err, result) {
+            // // result = {sid, name, todo, done} list
+            //     console.log('Project Substeps: '+result);
+            // });
         });
     });
 
-    socket.on('update substep', function(data) {
-        dbCon.query(sql.changeSubstep(data.sid, data.work), function (err, okpacket) {
-            // something
+    socket.on('add user to substep', function(data){
+        dbCon.query(sql.addSubstepMember(data.sid, data.username), function (err, okpacket) {
+            console.log("ADD Substep: "+okpacket);
         });
-    })
-})
+    });
+
+    socket.on('add detail to substep', function(data){
+        dbCon.query(sql.addDetail(data.sid, data.detailname), function (err, okpacket) {
+            console.log("ADD Detail: "+okpacket);
+        });
+    });
+
+    socket.on('add comment to substep', function(data){
+        dbCon.query(sql.addComment(data.sid, data.comment), function (err, okpacket) {
+            console.log("ADD Comment: "+okpacket);
+        });
+    });
+
+    socket.on('finish detail', function(data){
+        dbCon.query(sql.finishDetail(data.sid, data.detailname), function (err, okpacket) {
+            console.log("Finish Detail: "+okpacket);
+        });
+    });
+});
 
 http.listen(3000, function(){
     console.log('Server On!');
