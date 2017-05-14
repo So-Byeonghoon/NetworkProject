@@ -12,12 +12,12 @@ INSERT INTO Invites (uid, pid)
 	FROM Users U, Projects P
 	WHERE U.userid = P.pid;
 
-INSERT INTO Substeps (pid, work, name)
-	SELECT pid, 0, 'make Main Page'
+INSERT INTO Substeps (pid, name)
+	SELECT pid, 'make Main Page'
 	FROM Projects WHERE name='posrello';
-INSERT INTO Substeps (pid, work, name)
-	SELECT pid, 1, 'add Log In'
+INSERT INTO Substeps (pid, name)
+	SELECT pid, 'add Log In'
 	FROM Projects WHERE name='posrello';
-INSERT INTO Substeps (pid, work, name)
-	SELECT pid, 2, 'make Project'
+INSERT INTO Substeps (pid, name)
+	SELECT pid, 'make Project'
 	FROM Projects WHERE name='posrello';
