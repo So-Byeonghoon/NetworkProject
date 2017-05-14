@@ -239,8 +239,25 @@ io.on('connection', function(socket){
     
     function sendSubstepData(sid){
         var data ={
-        }
-        io.sockets.in(pid +" "+ sid).emit('load substep data', data);
+            substepInfo: [],    // substepInfo = {sid, substep_name, project_name}
+            detailList: [],     // details = {name, finished} list
+            memberList: [],     // members = {name} list
+            commentList: []     // comments = {contents} list
+        };
+
+        dbCon.query(sql.getDetails(data.sid), function (err, details) {
+            data.detailList = details;
+            dbCon.query(sql.getSubstebMembers(data.sid), function (err, members) {
+                data.memberList = members;
+                dbCon.query(sql.getComments(data.sid), function (err, comments) {
+                    data.commentList = comments;
+                    dbCon.query(sql.getSubstepInfo(data.sid), function (err, info) {
+                        data.substepInfo = info[0];
+                        io.sockets.in(pid +" "+ sid).emit('load substep data', data);
+                    });
+                });
+            });
+        });
     };
 
     socket.on('add user to substep', function(data){
