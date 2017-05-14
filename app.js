@@ -188,26 +188,6 @@ io.on('connection', function(socket){
         pid = data.pid;
         console.log(pid);
         socket.join(data.pid);
-        // var data = [
-        //     {
-        //         sid: 1,
-        //         work: 0,
-        //         pid: 1,
-        //         name: '메인 페이지 만들기'
-        //     },
-        //     {
-        //         sid: 2,
-        //         work: 1,
-        //         pid: 1,
-        //         name: '로그인 기능'
-        //     },
-        //     {
-        //         sid: 2,
-        //         work: 2,
-        //         pid: 1,
-        //         name: '프로젝트 만들기'
-        //     }
-        // ];
         dbCon.query(sql.getProjectSubsteps(data.pid), function (err, result) {
             // result = {sid, work, name} list
             console.log(result);
@@ -227,7 +207,11 @@ io.on('connection', function(socket){
 
     socket.on('make substep', function(data){
         dbCon.query(sql.makeSubstep(data.pid, data.substepname), function (err, okpacket) {
-            console.log(data.substepname);
+            dbCon.query(sql.getProjectSubsteps(data.pid), function (err, result) {
+            // result = {sid, work, name} list
+                console.log(result);
+                io.sockets.in(pid).emit('load data', result);
+            });
         });
     });
 
@@ -235,8 +219,24 @@ io.on('connection', function(socket){
         dbCon.query(sql.changeSubstep(data.sid, data.work), function (err, okpacket) {
             // something
         });
-    })
-})
+    });
+    
+
+    socket.on('add user to substep', function(data){
+            // data.sid, data.username 
+    });
+
+    socket.on('add detail to substep', function(data){
+            // data.sid, data.detailname
+    });
+
+    socket.on('add comment to substep', function(data){
+            // data.sid, data.comment
+    });
+
+    socket.on('finish detail', function(data){
+            // data.sid, data.detailname
+    });
 
 http.listen(3000, function(){
     console.log('Server On!');

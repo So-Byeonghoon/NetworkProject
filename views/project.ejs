@@ -11,6 +11,7 @@
             var userid = <%= userid %>;
             var pid = <%= pid %>;
             var socket = io();
+            var sid;
             socket.emit('add user', { userid: userid, pid: pid});
             socket.on('load data', function(data){
                 $("#todo").empty();
@@ -18,17 +19,21 @@
                 $("#done").empty();
                 for(var i in data){
                     if(data[i].work == 0) {    
-                        $("#todo").append("<div class='element' onclick='changePage();'>"+data[i].name+"</div>");
+                        $("#todo").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
                     } 
                     else if(data[i].work == 1) {
-                        $("#doing").append("<div class='element' onclick='changePage();'>"+data[i].name+"</div>");
+                        $("#doing").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
                     }
                     else {
-                        $("#done").append("<div class='element' onclick='changePage();'>"+data[i].name+"</div>");
+                        $("#done").append("<div class='element' id='element" + i + "'  onclick='changePage();'>"+data[i].name+"</div>");
                     }
                 }
             });
-
+            
+            socket.on('load substep data', function(data){
+                sid = data.sid;
+            });
+            
             function inviteUserToggle(){
                 var x = document.getElementById('inviteUser');
                 if (x.style.display === 'none') {
@@ -69,10 +74,37 @@
                     $projectShow.hide();
                 } else {
                     $workShow.hide();
-                    projectShow.show();
+                    $projectShow.show();
                 }
                 return;
             }
+
+            function addUserToSubstep(){
+                var x = $("#addUserToSubstepName").val();
+                socket.emit('add user to substep', { sid: sid, username: x });
+
+            };
+
+            function addDetail(){
+                var x = $("#addDetailName").val();
+                socket.emit('add detail to substep', { sid: sid, detailname: x });
+
+            };
+            
+            function addComment(){
+                var x = $("#addCommentName").val();
+                socket.emit('add comment to substep', { sid: sid, comment: x });
+
+            };
+
+            function finishDetail(){
+                var x = $("#finishDetailName").val();
+                socket.emit('finish detail', { sid: sid, detailname: x });
+
+            };
+
+            
+
         </script>
 
         <div>
@@ -119,6 +151,10 @@
             </div>
         </div>
         <div class="container" id="workShow">
+            <button onclick="changePage();">닫기</button>
+            <button>멤버 추가</button>
+            <button>세부사항 추가</button>
+            <button>코멘트 달기</button>
         </div>
     <body>
 </body>

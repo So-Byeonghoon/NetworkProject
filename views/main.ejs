@@ -60,7 +60,7 @@
                                 <div style="border: 0px;"><h4>해야할 일이  없습니다.</h4></div>
                             <% } else { %>
                                 <% for (var i in substepList) { %>                             
-                                    <div class="element" onclick="location.href='/projects/<%= substepList[i].pid %>/<%= substepList[i].sid %>'">
+                                    <div class="element" onclick="location.href='/projects/<%= substepList[i].pid %>'">
                                         <% for (var j in projectList) { %>
                                             <% if(projectList[j].pid == substepList[i].pid) { %>
                                                 <%= projectList[j].name %>
