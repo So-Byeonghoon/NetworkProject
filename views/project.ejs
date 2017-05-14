@@ -112,26 +112,27 @@
 
             function addUserToSubstep(){
                 var x = $("#addUserToSubstepName").val();
-                socket.emit('add user to substep', { sid: sid, username: x });
-
+                socket.emit('add user to substep', { sid: nsid, username: x });
+                addUserToSubstepToggle();
             };
 
             function addDetail(){
                 var x = $("#addDetailName").val();
-                socket.emit('add detail to substep', { sid: sid, detailname: x });
-
+                socket.emit('add detail to substep', { sid: nsid, detailname: x });
+                addDetailToggle();
             };
             
             function addComment(){
                 var x = $("#addCommentName").val();
-                socket.emit('add comment to substep', { sid: sid, comment: x });
+                socket.emit('add comment to substep', { sid: nsid, comment: x });
+                $("#addCommentName").val("");
 
             };
 
             function finishDetail(){
                 var x = $("#finishDetailName").val();
-                socket.emit('finish detail', { sid: sid, detailname: x });
-
+                socket.emit('finish detail', { sid: nsid, detailname: x });
+                
             };
 
             
@@ -192,14 +193,14 @@
                         <div class="WorkCard-left-top">    
                             <h4>세부사항</h4>
                             <ul>
-                                <li><input type="checkbox">12345</li>
+                                <li><input id="checkbox1" type="checkbox">12345</li>
                                 <li><input type="checkbox">678910</li>
                             </ul>
                         </div>
                         <div class="WorkCard-left-bottom">
                             <h4>코멘트</h4>
-                            <input type="text" style="margin-left:10%; width: 80%; height: 10%;">
-                            <button class="WorkCard-button" style="margin-left:75%;">코멘트 달기</button>
+                            <input type="text" id ="addCommentName"style="margin-left:10%; width: 80%; height: 10%;">
+                            <button class="WorkCard-button" style="margin-left:75%;" onclick="addComment();">코멘트 달기</button>
                             <ul>
                                 <li>hello</li>
                             </ul>    

@@ -244,6 +244,8 @@ io.on('connection', function(socket){
     };
 
     socket.on('add user to substep', function(data){
+        console.log(data.sid);
+        console.log(data.username);
         dbCon.query(sql.addSubstepMember(data.sid, data.username), function (err, okpacket) {
             console.log("ADD Substep: "+okpacket);
         });
