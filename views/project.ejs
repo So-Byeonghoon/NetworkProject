@@ -18,10 +18,16 @@
                 $("#doing").empty();
                 $("#done").empty();
                 for(var i in data){
+                    /*
                     if(data[i].work == 0) {    
                         $("#todo").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
                     } 
                     else if(data[i].work == 1) {
+=======*/
+                    if(data[i].done == 0) {    
+                        $("#todo").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
+                    } 
+                    else if(data[i].todo > 0) {
                         $("#doing").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
                     }
                     else {
@@ -33,7 +39,6 @@
             socket.on('load substep data', function(data){
                 sid = data.sid;
             });
-            
             
             function inviteUserToggle(){
                 var x = document.getElementById('inviteUser');
