@@ -237,6 +237,7 @@ io.on('connection', function(socket){
     socket.on('finish detail', function(data){
             // data.sid, data.detailname
     });
+});
 
 http.listen(3000, function(){
     console.log('Server On!');

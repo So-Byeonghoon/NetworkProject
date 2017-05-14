@@ -1,14 +1,17 @@
 html, body {
+
     height: 100%;
 }
 
 h1 {
+    margin-top: 5px;
     text-align: center;
 }
 
 h4, p {
-    margin-top-bottom: 3px;
+    margin-top: 3px;
     text-align: center;
+    margin-bottom: 0px;
 }
 
 div {
@@ -106,4 +109,57 @@ form {
     display: none;
 }
 
+.WorkCard{
+    margin-left:10%;
+    width: 80%; 
+    height: 100%;
+    border: 0px;
+}
 
+.WorkCard-header{
+    background-color: #d00500;
+    height: 15%;
+    border-bottom: 0px;
+}
+
+.WorkCard-container{
+    background-color: #d00500;
+    height: 75%;
+}
+
+.WorkCard-left {
+    background-color: white;
+    height: 97%;
+    float: left;
+    width: 68%;
+    border-top: 0px;
+}
+
+.WorkCard-right{
+    
+    background-color: white;
+    height: 97%;
+    float: right;
+    width: 28%;
+    border-top: 0px;
+}
+
+.WorkCard-left-top{
+    background-color: white;
+    height: 49%;
+    border-top:0px;
+    border-left:0px;
+    border-right: 0px;
+}
+
+.WorkCard-left-bottom {
+    background-color: white;
+    height: 49%;
+    border: 0px;
+}
+
+.WorkCard-button {
+    min-width: 100px;
+    width: 15%;
+    height: 30px;
+}
