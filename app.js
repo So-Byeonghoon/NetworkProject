@@ -240,7 +240,7 @@ io.on('connection', function(socket){
     function sendSubstepData(sid){
         var data ={
         }
-        io.sockets.in(pid +" "+ sid).emit('load substep data', data);
+        io.sockets.in(pid +" "+ sid).emit('load substep', data);
     };
 
     socket.on('add user to substep', function(data){
