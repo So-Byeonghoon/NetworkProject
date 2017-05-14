@@ -11,7 +11,7 @@
             var userid = <%= userid %>;
             var pid = <%= pid %>;
             var socket = io();
-            var sid;
+            var nsid;
             socket.emit('add user', { userid: userid, pid: pid});
             socket.on('load data', function(data){
                 $("#todo").empty();
@@ -25,7 +25,7 @@
                     else if(data[i].work == 1) {
 =======*/
                     if(data[i].done == 0) {    
-                        $("#todo").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
+                        $("#todo").append("<div class='element' id='element" + data[i].sid + "' onclick='changeToSubstep("+data[i].sid+ ");'>"+data[i].name+"</div>");
                     } 
                     else if(data[i].todo > 0) {
                         $("#doing").append("<div class='element' id='element" + i + "' onclick='changePage();'>"+data[i].name+"</div>");
@@ -36,7 +36,7 @@
                 }
             });
             
-            socket.on('load substep data', function(data){
+            socket.on('load substep', function(data){
                 sid = data.sid;
             });
             
@@ -90,16 +90,23 @@
                 return ;
             };
 
-            function changePage(){
+            function changeToSubstep(sid){
                 var $workShow = $('#workShow') ;
                 var $projectShow = $('#projectShow');
-                if($workShow.css('display') == 'none'){
-                    $workShow.show();
-                    $projectShow.hide();
-                } else {
-                    $workShow.hide();
-                    $projectShow.show();
-                }
+                $workShow.show();
+                $projectShow.hide();
+                nsid = sid;
+                socket.emit('get substep', { pid: pid, sid: sid });
+                return;
+            }
+            
+            function changeToProject(){
+                var $workShow = $('#workShow') ;
+                var $projectShow = $('#projectShow');
+                $workShow.hide();
+                $projectShow.show();
+                
+                socket.emit('leave substep', { pid: pid, sid: nsid });
                 return;
             }
 
@@ -177,7 +184,7 @@
         <div class="container" id="workShow">
             <div class="WorkCard">
                 <div class="WorkCard-header">
-                    <p style="text-align: right; margin-right: 15px;"><button onclick="changePage();">닫기</button></p>
+                    <p style="text-align: right; margin-right: 15px;"><button onclick="changeToProject();">닫기</button></p>
                     <h1>substep</h4>
                 </div>
                 <div class="WorkCard-container">

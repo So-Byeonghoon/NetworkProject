@@ -217,6 +217,32 @@ io.on('connection', function(socket){
         });
     });
 
+    socket.on('leave substep', function(data){
+        socket.leave(pid+" "+data.sid);
+        socket.join(pid);
+        
+        console.log(pid+" "+data.sid);
+        dbCon.query(sql.getProjectSubsteps(pid), function (err, result) {
+            // result = {sid, name, todo, done} list
+            console.log(result);
+            io.sockets.in(pid).emit('load data', result);
+        });
+
+    })
+
+    socket.on('get substep', function(data){
+        socket.leave(pid);
+        socket.join(pid+" "+data.sid);
+        console.log("leave room", pid);
+        sendSubstepData(data.sid);
+    });
+    
+    function sendSubstepData(sid){
+        var data ={
+        }
+        io.sockets.in(pid +" "+ sid).emit('load substep data', data);
+    };
+
     socket.on('add user to substep', function(data){
         dbCon.query(sql.addSubstepMember(data.sid, data.username), function (err, okpacket) {
             console.log("ADD Substep: "+okpacket);
