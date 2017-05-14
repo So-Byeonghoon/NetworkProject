@@ -64,8 +64,8 @@ SQL.prototype = {
 		return 'SELECT name FROM Projects WHERE pid="' + pid + '"';
 	},
 	makeSubstep: function(pid, name) {
-		return 'INSERT INTO Substeps (pid, name, work) ' +
-			   'VALUE ("' + pid + '", "' + name + '", 0)';
+		return 'INSERT INTO Substeps (pid, name) ' +
+			   'VALUE ("' + pid + '", "' + name + '")';
 	},
 	addSubstepMember: function(sid, username) {
 		return 'INSERT INTO Involve_Substeps (uid, sid) ' +
@@ -86,6 +86,28 @@ SQL.prototype = {
 			   'SET finished = 1 ' +
 			   'WHERE sid= "' + sid + '" ' +
 			     'AND name = "' + detailname + '"';
+	},
+	getDetails: function(sid) {
+		return 'SELECT name, finished ' +
+			   'FROM Details ' +
+			   'WHERE sid = "' + sid + '"';
+	},
+	getSubstebMembers: function(sid) {
+		return 'SELECT U.name ' +
+			   'FROM Involve_Substeps I, Users U ' +
+			   'WHERE U.userid = I.uid ' +
+			     'AND I.sid = "' + sid + '"';
+	},
+	getComments: function(sid) {
+		return 'SELECT contents ' +
+			   'FROM Comments ' +
+			   'WHERE sid = "' + sid + '"';
+	},
+	getSubstepInfo: function(sid) {
+		return 'SELECT S.sid, S.name substep_name, P.name project_name ' +
+			   'FROM Substeps S, Projects P ' +
+			   'WHERE P.pid = S.pid ' +
+			     'AND S.sid = "' + sid + '"';
 	}
 };
 

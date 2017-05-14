@@ -22,6 +22,10 @@ form {
     height: 100px;
 }
 
+ul {
+    overflow: auto;
+}
+
 .header-button {
     display: inline;
 }
