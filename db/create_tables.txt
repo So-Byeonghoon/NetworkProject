@@ -13,8 +13,9 @@ PRIMARY KEY(userid)
 
 CREATE TABLE Projects (
 pid INT NOT NULL AUTO_INCREMENT,
-name VARCHAR(50),
-PRIMARY KEY(pid)
+name VARCHAR(50) NOT NULL,
+PRIMARY KEY(pid),
+UNIQUE (name)
 );
 
 CREATE TABLE Involves (
