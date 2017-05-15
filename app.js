@@ -128,11 +128,11 @@ app.get('/makeProject', function(req,res){
     // query is existed, add new project to DB and redirect to main
     if(req.query.projectname){
         dbCon.query(sql.makeProject(req.query.projectname), function (err, okpacket) {
-            var statement = sql.addProjectMember(okpacket.insertId, req.session.userid);
             if (err) {
                 req.session.msg = 'same name';
                 res.redirect('/main');
             } else {
+                var statement = sql.addProjectMember(okpacket.insertId, req.session.userid);
                 dbCon.query(statement, function (err, okpacket) {
                     res.redirect('/main');
                 });
