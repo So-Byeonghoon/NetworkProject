@@ -51,6 +51,14 @@
                 }
             });
             
+            function logout(){      // disconnect socket & logout
+                socket.emit('logout', {
+                    userid : userid
+                });
+                socket.disconnect();
+                window.location = '/logout';
+            };
+
             function inviteUserToggle(){    // Toggle inviteUser form 
                 var x = document.getElementById('inviteUser');
                 if (x.style.display === 'none') {
@@ -157,7 +165,7 @@
             <span style="width: 23%; margin-left:77%">
                 <button class="header-button" onclick="makeSubstepToggle();">서브스텝 만들기</button>
                 <button class="header-button" onclick="inviteUserToggle();">참여자 초대</button>
-                <button class="header-button" onclick="location.href='/logout'">로그아웃</button>
+                <button class="header-button" onclick="logout();">로그아웃</button>
             </span>
         </div>        
         <div id="inviteUser" style="display: none; border-bottom: 0px;">

@@ -27,8 +27,8 @@ app.set("view engine", 'ejs');
 
 app.use(express.static('public'));
 
-
-app.get('/', function(req,res){
+// get login page
+app.get('/', function(req,res){     
     // if already logged-in, redirect to main
     if(typeof req.session.username !== 'undefined' && req.session.username){
         console.log("can't acess login page");
@@ -38,7 +38,8 @@ app.get('/', function(req,res){
     res.render('login');
 });
 
-app.get('/login', function(req,res){
+// routing for save user to session
+app.get('/login', function(req,res){        
     // if already logged-in, redirect to main
     if(typeof req.session.username !== 'undefined' && req.session.username){
         console.log("can't acess login page");
@@ -46,7 +47,7 @@ app.get('/login', function(req,res){
         return;
     }
     
-    function SignIn(req, callback) {
+    function SignIn(req, callback) {    // function for find user in DB and user is not existed, add to db
         dbCon.query(sql.setUser(req.query.username), function (err, rows) {
             if (Object.keys(rows).length) {
                 req.session.username = rows[0].name;
@@ -65,7 +66,8 @@ app.get('/login', function(req,res){
     });
 });
 
-app.get('/main', function(req,res){
+//get main page
+app.get('/main', function(req,res){     
     console.log("MAIN: " + req.session.username);
     // if not logged in, redirect to login page
     if(typeof req.session.username === 'undefined' || !req.session.username){
@@ -75,7 +77,7 @@ app.get('/main', function(req,res){
     }
     var msg = '';
     // check session have message to client
-    if(req.session.msg){
+    if(req.session.msg){        
         msg = req.session.msg;
         req.session.msg = false;
     }
@@ -91,6 +93,7 @@ app.get('/main', function(req,res){
     });
 });
 
+// routing for logout
 app.get('/logout', function(req, res){
     // if not logged in, redirect to login page
     if(typeof req.session.username === 'undefined' || !req.session.username){
@@ -113,6 +116,7 @@ app.get('/logout', function(req, res){
     }
 })
 
+// routing for making new project
 app.get('/makeProject', function(req,res){
     // if not logged in, redirect to login page
      if(typeof req.session.username === 'undefined' || !req.session.username){
@@ -120,7 +124,8 @@ app.get('/makeProject', function(req,res){
         res.redirect('/');
         return;
     }
-
+    
+    // query is existed, add new project to DB and redirect to main
     if(req.query.projectname){
         dbCon.query(sql.makeProject(req.query.projectname), function (err, okpacket) {
             var statement = sql.addProjectMember(okpacket.insertId, req.session.userid);
@@ -131,6 +136,7 @@ app.get('/makeProject', function(req,res){
     }
 })
 
+// get project page
 app.get('/projects/:id', function(req,res){
     // if not logged in, redirect to login page
     if(typeof req.session.username === 'undefined' || !req.session.username){
@@ -142,6 +148,8 @@ app.get('/projects/:id', function(req,res){
         pid : req.params.id,
         userid: req.session.userid
     };
+
+    // get project from db, if it is existed render project page, else redirect to main
     dbCon.query(sql.getProjectName(data.pid), function (err, result) {
         if (err) {
             console.log('getProejct ERROR: '+err);
@@ -153,6 +161,7 @@ app.get('/projects/:id', function(req,res){
     });
 });
 
+// routing for accpet invite 
 app.get('/acceptinvite/:id', function(req, res){
     var pid = req.params.id;
     var uid = req.session.userid;
@@ -178,18 +187,20 @@ app.get('/acceptinvite/:id', function(req, res){
     });
 });
 
-
+// socket part
 io.on('connection', function(socket){
     var pid;
-
+    
+    // function for send data about project from server to client
     function sendProjectData(pid){
         dbCon.query(sql.getProjectSubsteps(pid), function (err, result) {
             // result = {sid, name, todo, done} list
             console.log(result);
-            io.sockets.in(pid).emit('load data', result);
+            io.sockets.in(pid).emit('load data', result);   // send data to user in room pid
         });
     };
 
+    // if server get data from client with msg 'add user'
     socket.on('add user', function(data){
         console.log(data.userid);
         socket.userid = data.userid;
@@ -200,7 +211,9 @@ io.on('connection', function(socket){
         console.log("get Project's Substep SQL: " +sql.getProjectSubsteps(data.pid));
         sendProjectData(pid);
     });
-   
+  
+
+    // if server get data from client with msg 'invite user'
     socket.on('invite user', function(data){
         dbCon.query(sql.makeInvite(data.pid, data.username), function (err, okpacket) {
             if (err) {
@@ -211,6 +224,8 @@ io.on('connection', function(socket){
         });
     });
 
+
+    // if server get data from client with msg 'make substep'
     socket.on('make substep', function(data){
         dbCon.query(sql.makeSubstep(data.pid, data.substepname), function (err, okpacket) {
             console.log('Make Substep: '+okpacket);
@@ -218,6 +233,7 @@ io.on('connection', function(socket){
         });
     });
 
+    // if server get data from client with msg 'leave substep'
     socket.on('leave substep', function(data){
         socket.leave(pid+" "+data.sid);
         socket.join(pid);
@@ -231,6 +247,7 @@ io.on('connection', function(socket){
 
     })
 
+    // if server get data from client with msg 'get substep'
     socket.on('get substep', function(data){
         socket.leave(pid);
         socket.join(pid+" "+data.sid);
@@ -238,6 +255,7 @@ io.on('connection', function(socket){
         sendSubstepData(data.sid);
     });
     
+    // function that send substep data from server to client
     function sendSubstepData(sid){
         var data ={
             substepInfo: [],    // substepInfo = {sid, substep_name, project_name}
@@ -255,13 +273,15 @@ io.on('connection', function(socket){
                     dbCon.query(sql.getSubstepInfo(sid), function (err, info) {
                         data.substepInfo = info[0];
                         console.log(data);
-                        io.sockets.in(pid +" "+ sid).emit('load substep', data);
+                        io.sockets.in(pid +" "+ sid).emit('load substep', data);    // sedn data to user in room pid sid
                     });
                 });
             });
         });
     };
 
+
+    // if server get data from client with msg 'add user to substep'
     socket.on('add user to substep', function(data){
         console.log(data.sid);
         console.log(data.username);
@@ -272,6 +292,7 @@ io.on('connection', function(socket){
         sendSubstepData(data.sid);
     });
 
+    // if server get data from client with msg 'add detail to substep'
     socket.on('add detail to substep', function(data){
         dbCon.query(sql.addDetail(data.sid, data.detailname), function (err, okpacket) {
             console.log("ADD Detail: "+okpacket);
@@ -280,6 +301,7 @@ io.on('connection', function(socket){
         sendSubstepData(data.sid);
     });
 
+    // if server get data from client with msg 'add comment to substep'
     socket.on('add comment to substep', function(data){
         dbCon.query(sql.addComment(data.sid, data.comment), function (err, okpacket) {
             console.log("ADD Comment: "+okpacket);
@@ -288,14 +310,20 @@ io.on('connection', function(socket){
         sendSubstepData(data.sid);
     });
 
+    // if server get data from client with msg 'finish detal'
     socket.on('finish detail', function(data){
         dbCon.query(sql.finishDetail(data.sid, data.detailname), function (err, okpacket) {
             console.log("Finish Detail: "+okpacket);
         });
 
-        sendSubstepData(data.sid);
-        sendProjectData(pid);
+        sendSubstepData(data.sid);  // send data to in room pid-sid
+        sendProjectData(pid);   // send data to in room pid
     });
+    
+    // disconnect client to socket
+    socket.on('logout', function(data){
+        socket.disconnect();
+    })
 });
 
 http.listen(3000, function(){
